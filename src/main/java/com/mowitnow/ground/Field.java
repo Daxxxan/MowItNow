@@ -10,4 +10,18 @@ public class Field {
         this.topRightCell = topRightCell;
         this.bottomLeftCell = new Cell(0, 0);
     }
+
+    public boolean canIGoNorth(int y) { return topRightCell.getY() != y; }
+
+    public boolean canIGoWest(int x) {
+        return bottomLeftCell.getX() != x;
+    }
+
+    public boolean canIGoSouth(int y) {
+        return bottomLeftCell.getY() != y;
+    }
+
+    public boolean canIGoEast(int x) {
+        return topRightCell.getX() != x;
+    }
 }

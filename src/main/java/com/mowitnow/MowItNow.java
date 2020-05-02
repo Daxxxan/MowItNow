@@ -1,5 +1,7 @@
 package com.mowitnow;
 
+import com.mowitnow.enums.Direction;
+import com.mowitnow.enums.Move;
 import com.mowitnow.exception.InvalidFileContentException;
 import com.mowitnow.exception.InvalidMowerInstructions;
 import com.mowitnow.exception.ReadFileException;
@@ -25,8 +27,17 @@ public class MowItNow {
             Cell topRightCell = mowParser.getTopRightCell(mowerInstructions);
             ArrayList<Mower> mowers = mowParser.getMowers(mowerInstructions);
             Field field = new Field(topRightCell);
+            startMowers(field, mowers);
         } catch (ReadFileException | InvalidFileContentException | InvalidMowerInstructions e) {
             System.err.println(e.getMessage());
+        }
+    }
+
+    private static MowParser setMowerParser(String filePath) throws ReadFileException {
+        if(Files.exists(Paths.get(filePath))) {
+            return new MowParser(filePath);
+        } else {
+            throw new ReadFileException("File doesn't exist.");
         }
     }
 
@@ -38,11 +49,26 @@ public class MowItNow {
         }
     }
 
-    private static MowParser setMowerParser(String filePath) throws ReadFileException {
-        if(Files.exists(Paths.get(filePath))) {
-            return new MowParser(filePath);
-        } else {
-            throw new ReadFileException("File doesn't exist.");
+    private static void startMowers(Field field, ArrayList<Mower> mowers) {
+        for(Mower mower : mowers) {
+            mowItNowAndFast(field, mower);
         }
+    }
+
+    private static void mowItNowAndFast(Field field, Mower mower) {
+        for(Move move : mower.getMoves()) {
+            if(move.equals(Move.D)) {
+                mower.setDirection(mower.getDirection().getNextDirection(mower.getDirection().getId()));
+            } else if(move.equals(Move.G)) {
+                mower.setDirection(mower.getDirection().getPreviousDirection(mower.getDirection().getId()));
+            } else {
+                mower.moveForward(field);
+            }
+        }
+        displayMowerPosition(mower);
+    }
+
+    private static void displayMowerPosition(Mower mower) {
+        System.out.println(mower.toString());
     }
 }

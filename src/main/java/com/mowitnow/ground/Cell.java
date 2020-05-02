@@ -1,5 +1,7 @@
 package com.mowitnow.ground;
 
+import java.util.Objects;
+
 public class Cell {
     private int x;
     private int y;
@@ -23,5 +25,14 @@ public class Cell {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return x == cell.x &&
+                y == cell.y;
     }
 }

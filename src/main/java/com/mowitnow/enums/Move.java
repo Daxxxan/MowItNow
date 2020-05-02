@@ -1,6 +1,6 @@
 package com.mowitnow.enums;
 
-public enum Moves {
+public enum Move {
     D,
     G,
     A

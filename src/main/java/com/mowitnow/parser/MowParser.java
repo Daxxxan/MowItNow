@@ -1,7 +1,7 @@
 package com.mowitnow.parser;
 
-import com.mowitnow.enums.Directions;
-import com.mowitnow.enums.Moves;
+import com.mowitnow.enums.Direction;
+import com.mowitnow.enums.Move;
 import com.mowitnow.exception.InvalidMowerInstructions;
 import com.mowitnow.ground.Cell;
 import com.mowitnow.exception.InvalidFileContentException;
@@ -16,6 +16,8 @@ import java.util.List;
 public class MowParser {
     private String filePath;
 
+    public MowParser(){}
+
     public MowParser(String filePath) {
         this.filePath = filePath;
     }
@@ -27,19 +29,19 @@ public class MowParser {
     public Cell getTopRightCell(List<String> mowerInstructions) throws InvalidFileContentException {
         if(mowerInstructions.size() > 0) {
             String firstLine = mowerInstructions.get(0);
-            String[] dividedLine = divideLine(firstLine);
+            String[] dividedLine = divideFirstLine(firstLine);
             return new Cell(Integer.parseInt(dividedLine[0]), Integer.parseInt(dividedLine[1]));
         } else {
-            throw new InvalidFileContentException("The first line of the file is not valid.");
+            throw new InvalidFileContentException("The initial position is not valid.");
         }
     }
 
-    private String[] divideLine(String firstLine) throws InvalidFileContentException {
+    private String[] divideFirstLine(String firstLine) throws InvalidFileContentException {
         String[] dividedLine = firstLine.split(" ");
         if(dividedLine.length == 2) {
             return dividedLine;
         } else {
-            throw new InvalidFileContentException("The first line of the file is not valid.");
+            throw new InvalidFileContentException("The initial position is not valid.");
         }
     }
 
@@ -52,7 +54,7 @@ public class MowParser {
             for(int i = 1; i < mowerInstructions.size(); i++) {
                 if(isFirstLine) {
                     mower = new Mower();
-                    mower.setInitialPosition(getInitialCell(mowerInstructions.get(i)));
+                    mower.setPosition(getInitialCell(mowerInstructions.get(i)));
                     mower.setDirection(getDirection(mowerInstructions.get(i)));
                     isFirstLine = false;
                 } else {
@@ -81,10 +83,10 @@ public class MowParser {
         }
     }
 
-    private Directions getDirection(String firstLine) throws InvalidMowerInstructions {
+    private Direction getDirection(String firstLine) throws InvalidMowerInstructions {
         String[] dividedLine = firstLine.split(" ");
         if(dividedLine.length >= 3) {
-            for(Directions direction : Directions.values()) {
+            for(Direction direction : Direction.values()) {
                 if(dividedLine[2].equals(direction.name())) {
                     return direction;
                 }
@@ -93,9 +95,9 @@ public class MowParser {
         throw new InvalidMowerInstructions("Invalid initial direction");
     }
 
-    private ArrayList<Moves> getMowerMoves(String secondLine) throws InvalidMowerInstructions {
+    private ArrayList<Move> getMowerMoves(String secondLine) throws InvalidMowerInstructions {
         String[] dividedLine = secondLine.split("");
-        ArrayList<Moves> moves = new ArrayList<>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         for(int i = 0; i < secondLine.length(); i++) {
             moves.add(getMowerMove(Character.toString(secondLine.charAt(i))));
@@ -103,8 +105,8 @@ public class MowParser {
         return moves;
     }
 
-    private Moves getMowerMove(String stringMove) throws InvalidMowerInstructions {
-        for(Moves move : Moves.values()) {
+    private Move getMowerMove(String stringMove) throws InvalidMowerInstructions {
+        for(Move move : Move.values()) {
             if(stringMove.equals(move.name())) {
                 return move;
             }
